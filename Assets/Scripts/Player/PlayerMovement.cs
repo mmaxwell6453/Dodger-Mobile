@@ -5,6 +5,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float moveInput;
+    public float screenPadding = 0.5f;
 
     private float moveAction;
     private Rigidbody2D rb;
@@ -30,10 +31,34 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
         animator.SetFloat("Speed", Mathf.Abs(moveInput));
         spriteRenderer.flipX = moveInput < 0 ? true : false;
+        KeepPlayerOnScreen();
     }
 
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<float>();
+    }
+
+    void KeepPlayerOnScreen()
+    {
+        float halfPlayerWidth = spriteRenderer.bounds.extents.x;
+
+        float leftEdge = Camera.main.ViewportToWorldPoint(
+            new Vector3(0, 0, 0)
+        ).x;
+
+        float rightEdge = Camera.main.ViewportToWorldPoint(
+            new Vector3(1, 0, 0)
+        ).x;
+
+        Vector3 position = transform.position;
+
+        position.x = Mathf.Clamp(
+            position.x,
+            leftEdge + halfPlayerWidth + screenPadding,
+            rightEdge - halfPlayerWidth - screenPadding
+        );
+
+        transform.position = position;
     }
 }

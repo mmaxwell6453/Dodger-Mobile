@@ -34,6 +34,11 @@ public class PlayerMovement : MonoBehaviour
         KeepPlayerOnScreen();
     }
 
+    public void SetMoveInput(float input)
+    {
+        moveInput = input;
+    }
+
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<float>();
